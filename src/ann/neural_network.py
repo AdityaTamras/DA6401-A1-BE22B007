@@ -16,8 +16,18 @@ class NeuralNetwork:
             else:
                 hidden_sizes=[128]
             layer_dims = [784] + hidden_sizes + [10]
-        layer_dims = [int(x) for item in layer_dims
-                      for x in (item if isinstance(item, (list, tuple, np.ndarray)) else [item])]
+        
+        try:
+            flat=[]
+            for item in layer_dims:
+                if isinstance(item, (list, tuple, np.ndarray)):
+                    flat.extend([int(x) for x in np.array(item).flatten()])
+                else:
+                    flat.append(int(item))
+            layer_dims=flat
+        except TypeError:
+            layer_dims=[int(x) for x in np.array(layer_dims, dtype=object).flatten()]
+
         self.num_layers=len(layer_dims)-1
         self.activation_function=activation_function
         self.hidden_activations=[]
