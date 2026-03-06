@@ -16,6 +16,8 @@ class NeuralNetwork:
             else:
                 hidden_sizes=[128]
             layer_dims = [784] + hidden_sizes + [10]
+        layer_dims = [int(x) for item in layer_dims
+                      for x in (item if isinstance(item, (list, tuple, np.ndarray)) else [item])]
         self.num_layers=len(layer_dims)-1
         self.activation_function=activation_function
         self.hidden_activations=[]
@@ -64,7 +66,10 @@ class NeuralNetwork:
     def compute_loss(self, Z_out, Y, type):
         return compute_loss(Z_out, Y, type)
 
-    def backward(self, Z_L, y, loss_type, cache):
+    def backward(self, Z_L, y, loss_type='cross_entropy', cache=None):
+        if cache is None:
+            _, cache = self.forward(Z_L)
+
         grads={}
         m=y.shape[1]
         L=self.num_layers
