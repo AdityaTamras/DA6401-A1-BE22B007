@@ -4,7 +4,7 @@ from .objective_functions import compute_loss, output_layer_grad
 from .activations import activation_func
 
 class NeuralNetwork:
-    def __init__(self, layer_dims, weight_init, activation_function):
+    def __init__(self, layer_dims, weight_init='xavier', activation_function='relu'):
         self.num_layers=len(layer_dims)-1
         self.activation_function=activation_function
         self.hidden_activations=[]

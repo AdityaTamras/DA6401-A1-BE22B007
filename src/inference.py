@@ -10,7 +10,7 @@ def load_model(model_path):
     data=np.load(model_path, allow_pickle=True).item()
     return data
 
-def main():
+def parse_arguments():
     parser = argparse.ArgumentParser(description="Run inference with a saved MLP checkpoint")
 
     parser.add_argument('-d', '--dataset', type=str, choices=['mnist', 'fashion_mnist'], default='mnist', help='Choose Dataset')
@@ -33,8 +33,10 @@ def main():
     parser.add_argument('-ldt', '--log_data_table', action='store_true', help='Logging a table of 5 sample images per class')
     parser.add_argument('-lc', '--log_confusion',  action='store_true', help='Logging confusion matrix at the end of training')
 
-    args=parser.parse_args()
+    return parser.parse_args()
 
+def main():
+    args=parse_arguments()
     run_config=vars(args).copy()
     run_config['hidden_size']=' '.join(args.hidden_size)
 
