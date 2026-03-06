@@ -32,7 +32,7 @@ def main():
     parser.add_argument('-lr', '--learning_rate', type=float, default=0.01, help='Initial learning rate')
     parser.add_argument('-wd', '--weight_decay', type=float, default=0, help='Weight decay for L2 regularization')
     parser.add_argument('-nhl', '--num_layers', type=int, default=1, help='Number of hidden layers')
-    parser.add_argument('-sz', '--hidden_size', type=str, nargs='+', help='Number of neurons in each hidden layer')
+    parser.add_argument('-sz', '--hidden_size', type=int, nargs='+', default=[128], help='Number of neurons in each hidden layer')
     parser.add_argument('-a', '--activation', type=str, choices=['sigmoid', 'tanh', 'relu'], default='sigmoid', help='Activation function for every hidden layer')
     parser.add_argument('-w_i', '--weight_init', dest='weight_init', type=str, choices=['random', 'xavier', 'zeros'], default='xavier', help='Technique to initialize weights')
     parser.add_argument('--model_path', type=str,  default='best_model.npy', help='Path to save/load best model weights')
@@ -105,7 +105,7 @@ def main():
             global_step+=1
         
             if args.log_grads and global_step<=50:
-                dw1=grads['dw_1']
+                dw1=grads['dW_1']
                 grad_log={'grad_step': global_step}
                 for neuron_idx in range(min(5, dw1.shape[0])):
                     grad_log[f'GradNorm/Layer1_Neuron{neuron_idx+1}'] = float(np.linalg.norm(dw1[neuron_idx]))
