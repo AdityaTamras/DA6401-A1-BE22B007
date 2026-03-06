@@ -55,8 +55,11 @@ class NeuralNetwork:
             layer.b = weights[f'b{idx}']
 
     def forward(self, X):
+        input_dim = self.layers[0].W.shape[1]
         if X.ndim==1:
             X=X.reshape(-1, 1)
+        elif X.shape[0] != input_dim and X.shape[1] == input_dim:
+            X = X.T
         
         cache={}
         L=self.num_layers
