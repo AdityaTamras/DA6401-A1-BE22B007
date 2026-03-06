@@ -78,11 +78,8 @@ class NeuralNetwork:
         return compute_loss(Z_out, Y, type)
 
     def backward(self, Z_L, y, loss_type='cross_entropy', cache=None):
-        if cache is None:
-            _, cache = self.forward(Z_L)
-
         grads={}
-        m=y.shape[1]
+        m=y.shape[1] if y.ndim > 1 else y.shape[0]
         L=self.num_layers
 
         dZ_L=output_layer_grad(Z_L, y, loss_type)
