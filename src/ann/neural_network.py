@@ -5,6 +5,12 @@ from .activations import activation_func
 
 class NeuralNetwork:
     def __init__(self, layer_dims, weight_init='xavier', activation_function='relu'):
+        if hasattr(layer_dims,' __dict__') and not isinstance(layer_dims, (list, tuple)):
+            args=layer_dims
+            weight_init=getattr(args, 'weight_init',   weight_init)
+            activation_function=getattr(args, 'activation',    activation_function)
+            hidden_sizes=list(map(int, args.hidden_size)) if isinstance(args.hidden_size, (list, tuple)) else list(map(int, args.hidden_size.split()))
+            layer_dims = [784] + hidden_sizes + [10]
         self.num_layers=len(layer_dims)-1
         self.activation_function=activation_function
         self.hidden_activations=[]
