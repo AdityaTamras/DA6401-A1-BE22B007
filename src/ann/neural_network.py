@@ -1,3 +1,4 @@
+import argparse
 import numpy as np
 from .neural_layer import Layer
 from .objective_functions import compute_loss, output_layer_grad
@@ -5,7 +6,7 @@ from .activations import activation_func
 
 class NeuralNetwork:
     def __init__(self, layer_dims, weight_init='xavier', activation_function='relu'):
-        if hasattr(layer_dims,' __dict__') and not isinstance(layer_dims, (list, tuple)):
+        if isinstance(layer_dims, argparse.Namespace):
             args=layer_dims
             weight_init=getattr(args, 'weight_init',   weight_init)
             activation_function=getattr(args, 'activation',    activation_function)
