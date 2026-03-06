@@ -6,17 +6,24 @@ from .activations import activation_func
 
 class NeuralNetwork:
     def __init__(self, layer_dims, weight_init='xavier', activation_function='relu'):
-        print(f"DEBUG layer_dims: {repr(layer_dims)}")
         if isinstance(layer_dims, argparse.Namespace):
             args=layer_dims
             weight_init=getattr(args, 'weight_init',   weight_init)
             activation_function=getattr(args, 'activation',    activation_function)
-            hidden_sizes=getattr(args, 'hidden_size', None)
-            if hidden_sizes is not None:
-                hidden_sizes=list(map(int, args.hidden_size)) if isinstance(args.hidden_size, (list, tuple)) else list(map(int, args.hidden_size.split()))
-            else:
+            hidden_size=getattr(args, 'hidden_size', None)
+            input_dim=getattr(args, 'input_dim', 784)
+            output_dim=getattr(args, 'output_dim', 10)
+
+            if hidden_size is None:
                 hidden_sizes=[128]
-            layer_dims = [784] + hidden_sizes + [10]
+            elif isinstance(hidden_size, (list, tuple)):
+                hidden_sizes = [int(x) for x in hidden_size]
+            else:
+                hidden_sizes = [int(x) for x in str(hidden_size).split()]
+
+            layer_dims = [int(input_dim)] + hidden_sizes + [int(output_dim)]
+
+        layer_dims = [int(x) for x in layer_dims]
 
         self.num_layers=len(layer_dims)-1
         self.activation_function=activation_function
