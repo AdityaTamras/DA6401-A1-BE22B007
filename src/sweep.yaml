@@ -1,0 +1,48 @@
+program: train.py
+
+command:
+  #- ${env}
+  - "C:\\Users\\adity\\Documents\\IITM Acads\\DA6401\\.venv\\Scripts\\python.exe"
+  - ${program}
+  - ${args}
+
+method: bayes
+metric:
+  name: val_f1_score
+  goal: maximize
+
+parameters:
+  epochs:
+    values: [5, 10, 20]
+
+  batch_size:
+    values: [32, 64, 128]
+
+  learning_rate:
+    distribution: log_uniform_values
+    min: 0.0001
+    max: 0.01
+
+  weight_decay:
+    distribution: log_uniform_values
+    min: 0.000001
+    max: 0.001
+
+  optimizer:
+    values: ["sgd", "momentum", "nag", "rmsprop"]
+
+  activation:
+    values: ["relu", "tanh", "sigmoid"]
+
+  loss:
+    values: ["cross_entropy", "mean_squared_error"]
+
+  weight_init:
+    values: ["random", "xavier"]
+
+  hidden_size:
+    values:
+      - "64"
+      - "128"
+      - "128 64"
+      - "128 128 128"

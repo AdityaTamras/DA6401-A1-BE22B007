@@ -1,0 +1,24 @@
+{
+    "dataset": "fashion_mnist",
+    "epochs": 10,
+    "batch_size": 64,
+    "loss": "cross_entropy",
+    "optimizer": "rmsprop",
+    "learning_rate": 0.0008497188082204195,
+    "weight_decay": 3.6577265332121826e-05,
+    "num_layers": 1,
+    "hidden_size": [
+        "128",
+        "128",
+        "128"
+    ],
+    "activation": "relu",
+    "weight_init": "xavier",
+    "model_path": "best_model.npy",
+    "wandb_project": "DA6401_A1_BE22B007",
+    "exp_name": "2.10 - Fashion MNIST",
+    "log_grads": false,
+    "log_acts": false,
+    "log_data_table": false,
+    "log_confusion": false
+}
