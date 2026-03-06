@@ -10,7 +10,11 @@ class NeuralNetwork:
             args=layer_dims
             weight_init=getattr(args, 'weight_init',   weight_init)
             activation_function=getattr(args, 'activation',    activation_function)
-            hidden_sizes=list(map(int, args.hidden_size)) if isinstance(args.hidden_size, (list, tuple)) else list(map(int, args.hidden_size.split()))
+            hidden_sizes=getattr(args, 'hidden_size', None)
+            if hidden_sizes is not None:
+                hidden_sizes=list(map(int, args.hidden_size)) if isinstance(args.hidden_size, (list, tuple)) else list(map(int, args.hidden_size.split()))
+            else:
+                hidden_sizes=[128]
             layer_dims = [784] + hidden_sizes + [10]
         self.num_layers=len(layer_dims)-1
         self.activation_function=activation_function
@@ -40,6 +44,10 @@ class NeuralNetwork:
             self.init_params[key]=weights[key]
 
     def forward(self, X):
+        if X.ndim==1:
+            X=X.reshape(-1, 1)
+        elif X.shape[0]!=self.layers[0].W.shape[1]:
+            X=X.T
         cache={}
         L=self.num_layers
         A_prev=X
