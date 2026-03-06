@@ -51,8 +51,8 @@ class NeuralNetwork:
     def set_weights(self, weights):
         print(f"DEBUG set_weights keys: {list(weights.keys())}")
         for idx, layer in enumerate(self.layers, start=0):
-            layer.W = weights[f'W{idx-1}']
-            layer.b = weights[f'b{idx-1}']
+            layer.W = weights[f'W{idx}']
+            layer.b = weights[f'b{idx}']
 
     def forward(self, X):
         if X.ndim==1:
