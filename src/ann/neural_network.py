@@ -57,8 +57,7 @@ class NeuralNetwork:
     def forward(self, X):
         if X.ndim==1:
             X=X.reshape(-1, 1)
-        elif X.shape[0]!=self.layers[0].W.shape[1]:
-            X=X.T
+        
         cache={}
         L=self.num_layers
         A_prev=X
