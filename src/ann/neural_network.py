@@ -40,7 +40,7 @@ class NeuralNetwork:
     @property
     def init_params(self):
         params={}
-        for idx, layer in enumerate(self.layers, start=1):
+        for idx, layer in enumerate(self.layers, start=0):
             params[f'W{idx}']=layer.W
             params[f'b{idx}']=layer.b
         return params
@@ -50,9 +50,9 @@ class NeuralNetwork:
     
     def set_weights(self, weights):
         print(f"DEBUG set_weights keys: {list(weights.keys())}")
-        for idx, layer in enumerate(self.layers, start=1):
-            layer.W = weights[f'W{idx}']
-            layer.b = weights[f'b{idx}']
+        for idx, layer in enumerate(self.layers, start=0):
+            layer.W = weights[f'W{idx-1}']
+            layer.b = weights[f'b{idx-1}']
 
     def forward(self, X):
         if X.ndim==1:
@@ -86,14 +86,14 @@ class NeuralNetwork:
         dZ_L=output_layer_grad(Z_L, y, loss_type)
         output_layer=self.layers[L-1]
         dA_prev=output_layer.backward(dZ_L, m)
-        grads[f'dW_{L}']=output_layer.grad_W
-        grads[f'db_{L}']=output_layer.grad_b
+        grads[f'dW{L-1}']=output_layer.grad_W
+        grads[f'db{L-1}']=output_layer.grad_b
 
         for l in reversed(range(1, L)):
             layer=self.layers[l-1]
             dA_prev=layer.backward(dA_prev, m)
-            grads[f'dW_{l}']=layer.grad_W
-            grads[f'db_{l}']=layer.grad_b
+            grads[f'dW{l-1}']=layer.grad_W
+            grads[f'db{l-1}']=layer.grad_b
 
-        self.layer_grad_norms = [np.linalg.norm(grads[f'dW_{l}']) for l in range(1, L+1)]
+        self.layer_grad_norms = [np.linalg.norm(grads[f'dW{l}']) for l in range(0, L)]
         return grads

@@ -48,7 +48,7 @@ def main():
 
     hidden_sizes=args.hidden_size
     run_config=vars(args).copy()
-    run_config['hidden_size']=' '.join(args.hidden_size)
+    run_config['hidden_size']=' '.join(map(str, args.hidden_size))
 
     run=wandb.init(
         project=args.wandb_project, config=run_config, tags=[args.exp_name] if args.exp_name else []
@@ -108,7 +108,7 @@ def main():
             global_step+=1
         
             if args.log_grads and global_step<=50:
-                dw1=grads['dW_1']
+                dw1=grads['dW0']
                 grad_log={'grad_step': global_step}
                 for neuron_idx in range(min(5, dw1.shape[0])):
                     grad_log[f'GradNorm/Layer1_Neuron{neuron_idx+1}'] = float(np.linalg.norm(dw1[neuron_idx]))
