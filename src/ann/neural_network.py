@@ -49,6 +49,7 @@ class NeuralNetwork:
         return {key: val.copy() for key, val in self.init_params.items()}
     
     def set_weights(self, weights):
+        print(f"DEBUG set_weights keys: {list(weights.keys())}")
         for idx, layer in enumerate(self.layers, start=1):
             layer.W = weights[f'w_{idx}']
             layer.b = weights[f'b_{idx}']
