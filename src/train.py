@@ -46,6 +46,7 @@ def main():
 
     args=parser.parse_args()
 
+    hidden_sizes=args.hidden_size
     run_config=vars(args).copy()
     run_config['hidden_size']=' '.join(args.hidden_size)
 
@@ -58,8 +59,10 @@ def main():
     raw_hidden=cfg.hidden_size
     if isinstance(raw_hidden, str):
         hidden_sizes=list(map(int, raw_hidden.split()))
-    else:
+    elif isinstance(raw_hidden, (list, tuple)):
         hidden_sizes=list(map(int, raw_hidden))
+    else:
+        hidden_sizes=[int(raw_hidden)]
 
     X_train_raw, y_train_raw, X_test, y_test=load_dataset(args.dataset)
 
