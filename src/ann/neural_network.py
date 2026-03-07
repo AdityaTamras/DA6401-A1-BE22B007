@@ -46,19 +46,16 @@ class NeuralNetwork:
         return params
 
     def get_weights(self):
-        weights=[]
-        for layer in self.layers:
-            weights.append(layer.W.copy())
-            weights.append(layer.b.copy())
-        return weights
+        return {key: val.copy() for key, val in self.init_params.items()}
     
     def set_weights(self, weights):
-        idx=0
-        for layer in self.layers:
-            layer.W=np.array(weights[idx])
-            layer.b=np.array(weights[idx+1]).reshape(layer.W.shape[0], 1)
-            idx+=2
-        
+        for idx, layer in enumerate(self.layers, start=0):
+            W = np.array(weights[f'W{idx}'])
+            b = np.array(weights[f'b{idx}'])
+            n_out = W.shape[0]
+            layer.W=W
+            layer.b = b.reshape(n_out, 1)
+
     def forward(self, X):
         input_dim=self.layers[0].W.shape[1]
         X=np.array(X)
