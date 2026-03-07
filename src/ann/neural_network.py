@@ -66,14 +66,8 @@ class NeuralNetwork:
         X=np.array(X)
         n_in=self.n_in
         if X.ndim==1:
-            X=X.reshape(n_in, 1)
-        elif X.ndim==2:
-            if X.shape[1]==n_in:
-                X = X.T
-            elif X.shape[0]==n_in:
-                pass
-                
-        
+            X=X.reshape(1, -1)
+        X=X.T
         self.cache={'A_0': X}
         L=self.num_layers
         A_prev=X
