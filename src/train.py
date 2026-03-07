@@ -16,7 +16,7 @@ def build_layer_dims(input_dim, hidden_dim, num_classes):
 
 def evaluate(model, X, y_true):
     Z_out = model.forward(X)
-    y_pred=np.argmax(Z_out, axis=0)
+    y_pred=np.argmax(Z_out, axis=1)
     acc=accuracy_score(y_true, y_pred)
     f1=f1_score(y_true, y_pred, average='macro', zero_division=0)
     return acc, f1, y_pred

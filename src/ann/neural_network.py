@@ -87,7 +87,7 @@ class NeuralNetwork:
 
     def forward(self, X):
         logits, _ = self._forward(X)
-        return logits
+        return logits.T
     
     def compute_loss(self, Z_out, Y, type):
         return compute_loss(Z_out, Y, type)
