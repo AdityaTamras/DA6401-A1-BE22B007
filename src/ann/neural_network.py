@@ -61,7 +61,7 @@ class NeuralNetwork:
             if b_key in weight_dict:
                 layer.b=weight_dict[b_key].copy()
 
-    def forward(self, X):
+    def _forward(self, X):
         input_dim=self.layers[0].W.shape[1]
         X=np.array(X)
         if X.ndim==1:
@@ -84,6 +84,10 @@ class NeuralNetwork:
 
         self.hidden_activations=[cache[f'A_{l}'] for l in range(1, L)]
         return cache[f'A_{L}'], cache
+
+    def forward(self, X):
+        logits, _ = self._forward(X)
+        return logits
     
     def compute_loss(self, Z_out, Y, type):
         return compute_loss(Z_out, Y, type)

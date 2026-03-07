@@ -15,7 +15,7 @@ def build_layer_dims(input_dim, hidden_dim, num_classes):
     return [input_dim] + hidden_dim + [num_classes]
 
 def evaluate(model, X, y_true):
-    Z_out, _ = model.forward(X)
+    Z_out = model.forward(X)
     y_pred=np.argmax(Z_out, axis=0)
     acc=accuracy_score(y_true, y_pred)
     f1=f1_score(y_true, y_pred, average='macro', zero_division=0)
@@ -26,14 +26,14 @@ def main():
 
     parser.add_argument('-d', '--dataset', type=str, choices=['mnist', 'fashion_mnist'], default='mnist', help='Choose Dataset')
     parser.add_argument('-e', '--epochs', type=int, default=10, help='Number of training epochs')
-    parser.add_argument('-b', '--batch_size', type=int, default=32, help='Mini-batch size')
+    parser.add_argument('-b', '--batch_size', type=int, default=128, help='Mini-batch size')
     parser.add_argument('-l', '--loss', type=str, choices=['mean_squared_error', 'cross_entropy'], default='cross_entropy', help='Choice of loss function')
-    parser.add_argument('-o', '--optimizer', type=str,   choices=['sgd', 'momentum', 'nag', 'rmsprop'], default='sgd', help='Choice of optimizer')
-    parser.add_argument('-lr', '--learning_rate', type=float, default=0.01, help='Initial learning rate')
-    parser.add_argument('-wd', '--weight_decay', type=float, default=0, help='Weight decay for L2 regularization')
+    parser.add_argument('-o', '--optimizer', type=str,   choices=['sgd', 'momentum', 'nag', 'rmsprop'], default='rmsprop', help='Choice of optimizer')
+    parser.add_argument('-lr', '--learning_rate', type=float, default=0.0006512770150461274, help='Initial learning rate')
+    parser.add_argument('-wd', '--weight_decay', type=float, default=6.939204254478591e-06, help='Weight decay for L2 regularization')
     parser.add_argument('-nhl', '--num_layers', type=int, default=1, help='Number of hidden layers')
-    parser.add_argument('-sz', '--hidden_size', type=int, nargs='+', default=[128], help='Number of neurons in each hidden layer')
-    parser.add_argument('-a', '--activation', type=str, choices=['sigmoid', 'tanh', 'relu'], default='sigmoid', help='Activation function for every hidden layer')
+    parser.add_argument('-sz', '--hidden_size', type=int, nargs='+', default=[128, 128, 128], help='Number of neurons in each hidden layer')
+    parser.add_argument('-a', '--activation', type=str, choices=['sigmoid', 'tanh', 'relu'], default='relu', help='Activation function for every hidden layer')
     parser.add_argument('-w_i', '--weight_init', dest='weight_init', type=str, choices=['random', 'xavier', 'zeros'], default='xavier', help='Technique to initialize weights')
     parser.add_argument('--model_path', type=str,  default='best_model.npy', help='Path to save/load best model weights')
 
@@ -99,7 +99,7 @@ def main():
         for i in range(0, N, args.batch_size):
             X_batch=X_train[:, i:i+args.batch_size]
             y_batch=y_train_s[:, i:i+args.batch_size]
-            Z_out, cache = model.forward(X_batch)
+            Z_out, cache = model._forward(X_batch)
             loss=model.compute_loss(Z_out, y_batch, args.loss)
             grads=model.backward(Z_out, y_batch, args.loss, cache)
             optim.update_parameters(model.init_params, grads)
