@@ -67,10 +67,11 @@ class NeuralNetwork:
         if X.ndim==1:
             X=X.reshape(input_dim, 1)
         elif X.ndim==2:
-            if X.shape[0]==input_dim:
-                pass
-            elif X.shape[1] == input_dim:
+            if X.shape[1]==input_dim:
                 X = X.T
+            elif X.shape[0] == input_dim:
+                pass
+                
         
         self.cache={'A_0': X}
         L=self.num_layers
