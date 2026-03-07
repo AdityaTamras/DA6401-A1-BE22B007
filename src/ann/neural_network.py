@@ -50,8 +50,11 @@ class NeuralNetwork:
     
     def set_weights(self, weights):
         for idx, layer in enumerate(self.layers, start=0):
-            layer.W = np.array(weights[f'W{idx}'])
-            layer.b = np.array(weights[f'b{idx}']).reshape(-1, 1)
+            W = np.array(weights[f'W{idx}'])
+            b = np.array(weights[f'b{idx}'])
+            n_out = W.shape[0]
+            layer.W=W
+            layer.b = b.reshape(n_out, 1)
 
     def forward(self, X):
         input_dim=self.layers[0].W.shape[1]
