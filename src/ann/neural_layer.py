@@ -21,7 +21,7 @@ class Layer:
 
     def forward(self, A_prev):
         self.A_prev=A_prev
-        Z=self.W@self.A_prev+self.b
+        Z=self.W@self.A_prev+self.b.reshape(-1, 1)
         self.A=Z if self.activation=='linear' else activation_func(Z, self.activation)
         return self.A
     
