@@ -36,6 +36,7 @@ class NeuralNetwork:
             self.layers.append(
                 Layer(n_in=layer_dims[i-1], n_out=layer_dims[i], activation=activation, w_init=weight_init)
             )
+        self.n_in=layer_dims[0]
 
     @property
     def init_params(self):
@@ -62,14 +63,14 @@ class NeuralNetwork:
                 layer.b=weight_dict[b_key].copy()
 
     def forward(self, X):
-        input_dim=self.layers[0].W.shape[1]
         X=np.array(X)
+        n_in=self.n_in
         if X.ndim==1:
-            X=X.reshape(input_dim, 1)
+            X=X.reshape(n_in, 1)
         elif X.ndim==2:
-            if X.shape[1]==input_dim:
+            if X.shape[1]==n_in:
                 X = X.T
-            elif X.shape[0] == input_dim:
+            elif X.shape[0]==n_in:
                 pass
                 
         
