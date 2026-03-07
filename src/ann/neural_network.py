@@ -49,17 +49,19 @@ class NeuralNetwork:
         return {key: val.copy() for key, val in self.init_params.items()}
     
     def set_weights(self, weights):
-        print(f"DEBUG set_weights keys: {list(weights.keys())}")
         for idx, layer in enumerate(self.layers, start=0):
             layer.W = weights[f'W{idx}']
             layer.b = weights[f'b{idx}']
 
     def forward(self, X):
-        input_dim = self.layers[0].W.shape[1]
+        input_dim=self.layers[0].W.shape[1]
         if X.ndim==1:
             X=X.reshape(-1, 1)
-        elif X.shape[0] != input_dim and X.shape[1] == input_dim:
-            X = X.T
+        elif X.ndim==2:
+            if X.shape[0]==input_dim:
+                pass
+            elif X.shape[1] == input_dim:
+                X = X.T
         
         cache={}
         L=self.num_layers
