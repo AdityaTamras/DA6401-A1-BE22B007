@@ -21,7 +21,7 @@ class Layer:
 
     def forward(self, A_prev):
         self.A_prev=A_prev
-        Z=np.dot(self.W, self.A_prev)+self.b
+        Z=self.A_prev@self.W + self.b
         self.A=Z if self.activation=='linear' else activation_func(Z, self.activation)
         return self.A
     

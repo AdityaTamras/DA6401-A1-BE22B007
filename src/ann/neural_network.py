@@ -46,12 +46,17 @@ class NeuralNetwork:
         return params
 
     def get_weights(self):
-        return {key: val.copy() for key, val in self.init_params.items()}
+        params={}
+        for idx, layer in enumerate(self.layers, start=0):
+            params[f'W{idx}'] = layer.W.T.copy()  
+            params[f'b{idx}'] = layer.b.flatten()
+        return params
     
     def set_weights(self, weights):
         for idx, layer in enumerate(self.layers, start=0):
-            layer.W = weights[f'W{idx}']
-            layer.b = weights[f'b{idx}']
+            layer.W = weights[f'W{idx}'].T
+            b = weights[f'b{idx}']
+            layer.b = b.reshape(-1, 1)
 
     def forward(self, X):
         input_dim=self.layers[0].W.shape[1]
