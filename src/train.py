@@ -147,7 +147,7 @@ def main():
         if val_f1>best_f1_score:
             best_f1_score=val_f1
             best_weights=model.get_weights()
-            np.save(args.model_path, model.init_params)
+            np.save(args.model_path, np.array(model.get_weights(), dtype=object), allow_pickle=True)
             with open("best_config.json", "w") as f:
                 json.dump(vars(args), f, indent=4)
 
