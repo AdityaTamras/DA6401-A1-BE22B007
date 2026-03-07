@@ -65,9 +65,17 @@ class NeuralNetwork:
     def forward(self, X):
         X=np.array(X)
         n_in=self.n_in
-        if X.ndim==1:
-            X=X.reshape(1, -1)
-        X=X.T
+        if X.ndim == 1:
+            X = X.reshape(n_in, 1)          # flat -> (n_in, 1) column-major
+        elif X.ndim == 2:
+            # Use n_in (fixed at init) to unambiguously determine orientation
+            if X.shape[0] == n_in:
+                pass                        # already (n_in, batch)
+            elif X.shape[1] == n_in:
+                X = X.T                     # (batch, n_in) -> (n_in, batch)
+            else:
+                # Neither dim matches — fall back to treating as (batch, n_in)
+                X = X.T
         self.cache={'A_0': X}
         L=self.num_layers
         A_prev=X
