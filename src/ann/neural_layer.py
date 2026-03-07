@@ -21,13 +21,13 @@ class Layer:
 
     def forward(self, A_prev):
         self.A_prev=A_prev
-        Z=np.dot(self.W, self.A_prev)+self.b
+        Z=self.W@self.A_prev+self.b
         self.A=Z if self.activation=='linear' else activation_func(Z, self.activation)
         return self.A
     
     def backward(self, dA, m):
         dZ=dA if self.activation=='linear' else dA*activation_derivative(self.A, self.activation)
-        self.grad_W=(1/m)*np.dot(dZ, self.A_prev.T)
-        self.grad_b=(1/m)*np.sum(dZ, axis=1, keepdims=True)
-        return np.dot(self.W.T, dZ)
+        self.grad_W=dZ@self.A_prev.T
+        self.grad_b=np.sum(dZ, axis=1, keepdims=True)
+        return self.W.T@dZ
 

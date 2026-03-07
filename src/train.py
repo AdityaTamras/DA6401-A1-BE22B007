@@ -99,9 +99,9 @@ def main():
         for i in range(0, N, args.batch_size):
             X_batch=X_train[:, i:i+args.batch_size]
             y_batch=y_train_s[:, i:i+args.batch_size]
-            Z_out, cache = model._forward(X_batch)
-            loss=model.compute_loss(Z_out, y_batch, args.loss)
-            grads=model.backward(Z_out, y_batch, args.loss, cache)
+            model.forward(X_batch)
+            loss=model.compute_loss(y_batch, args.loss)
+            grads=model.backward(y_batch, args.loss)
             optim.update_parameters(model.init_params, grads)
             epoch_loss+=loss
             num_batches+=1

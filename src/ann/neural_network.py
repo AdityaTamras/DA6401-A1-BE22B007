@@ -61,43 +61,44 @@ class NeuralNetwork:
             if b_key in weight_dict:
                 layer.b=weight_dict[b_key].copy()
 
-    def _forward(self, X):
+    def forward(self, X):
         input_dim=self.layers[0].W.shape[1]
         X=np.array(X)
         if X.ndim==1:
-            X=X.reshape(input_dim, -1)
+            X=X.reshape(input_dim, 1)
         elif X.ndim==2:
             if X.shape[0]==input_dim:
                 pass
             elif X.shape[1] == input_dim:
                 X = X.T
         
-        cache={}
+        self.cache={'A_0': X}
         L=self.num_layers
         A_prev=X
-        cache['A_0']=X
 
         for idx, layer in enumerate(self.layers, start=1):
             A=layer.forward(A_prev)
-            cache[f'A_{idx}']=A
+            self.cache[f'A_{idx}']=A
             A_prev=A
 
-        self.hidden_activations=[cache[f'A_{l}'] for l in range(1, L)]
-        return cache[f'A_{L}'], cache
-
-    def forward(self, X):
-        logits, _ = self._forward(X)
-        return logits.T
+        self.hidden_activations=[self.cache[f'A_{l}'] for l in range(1, L)]
+        self._last_logits=self.cache[f'A_{L}']
+        return self._last_logits.T
     
-    def compute_loss(self, Z_out, Y, type):
-        return compute_loss(Z_out, Y, type)
+    def compute_loss(self, Y, type):
+        return compute_loss(self._last_logits, Y, type)
 
-    def backward(self, Z_L, y, loss_type='cross_entropy', cache=None):
+    def backward(self, y, loss_type='cross_entropy'):
         grads={}
-        m=y.shape[1] if y.ndim > 1 else y.shape[0]
+        y=np.array(y)
+        if y.ndim==1:
+            y=y.reshape(-1, 1)
+        elif y.shape[1]==self._last_logits.shape[0]:
+            y = y.T
+        m=y.shape[1]
         L=self.num_layers
 
-        dZ_L=output_layer_grad(Z_L, y, loss_type)
+        dZ_L=output_layer_grad(self._last_logits, y, loss_type)
         output_layer=self.layers[L-1]
         dA_prev=output_layer.backward(dZ_L, m)
         grads[f'dW{L-1}']=output_layer.grad_W
