@@ -101,8 +101,8 @@ def main():
             y_batch=y_train_s[:, i:i+args.batch_size]
             Z_out=model.forward(X_batch)
             loss=model.compute_loss(Z_out, y_batch, args.loss)
-            grads=model.backward(Z_out, y_batch, args.loss)
-            optim.update_parameters(model.init_params, grads)
+            grad_W, grad_b = model.backward(Z_out, y_batch, args.loss)
+            optim.update_parameters(model.init_params, grad_W, grad_b)
             epoch_loss+=loss
             num_batches+=1
             global_step+=1

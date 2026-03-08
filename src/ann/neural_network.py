@@ -103,21 +103,28 @@ class NeuralNetwork:
             y = y.reshape(-1, 1)
         if y.shape[0] != n_out and y.shape[1] == n_out:
             y = y.T
-            
+
         m=y.shape[1] if y.ndim>1 else y.shape[0]
         L=self.num_layers
 
+        grad_W_list = []
+        grad_b_list = []
         dZ_L=output_layer_grad(Z_L, y, loss_type)
         output_layer=self.layers[L-1]
         dA_prev=output_layer.backward(dZ_L, m)
-        grads[f'dW{L-1}']=output_layer.grad_W
-        grads[f'db{L-1}']=output_layer.grad_b
+        grad_W_list.append(self.layers[L-1].grad_W)
+        grad_b_list.append(self.layers[L-1].grad_b)
 
         for l in reversed(range(1, L)):
-            layer=self.layers[l-1]
-            dA_prev=layer.backward(dA_prev, m)
-            grads[f'dW{l-1}']=layer.grad_W
-            grads[f'db{l-1}']=layer.grad_b
+            dA_prev=self.layers[l - 1].backward(dA_prev, m)
+            grad_W_list.append(self.layers[l-1].grad_W)
+            grad_b_list.append(self.layers[l-1].grad_b)
 
-        self.layer_grad_norms = [np.linalg.norm(grads[f'dW{l}']) for l in range(0, L)]
-        return grads
+        self.grad_W=np.empty(len(grad_W_list), dtype=object)
+        self.grad_b=np.empty(len(grad_b_list), dtype=object)
+        for i, (gw, gb) in enumerate(zip(grad_W_list, grad_b_list)):
+            self.grad_W[i]=gw
+            self.grad_b[i]=gb
+
+        self.layer_grad_norms = [np.linalg.norm(self.grad_W[i]) for i in range(L)]
+        return self.grad_W, self.grad_b

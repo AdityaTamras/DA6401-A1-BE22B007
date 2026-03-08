@@ -8,14 +8,18 @@ class Optimizer:
         self.v={}
         self.m={}
 
-    def update_parameters(self, params, grads):
+    def update_parameters(self, params, grad_W, grad_b):
+        L=len(grad_W)
         for key in params.keys():
             if key not in self.v:
                 self.v[key]=np.zeros_like(params[key])
                 self.m[key]=np.zeros_like(params[key])
 
-            dw=grads[f'd{key}']
-            if 'w' in key:
+            i=int(''.join(filter(str.isdigit, key)))
+            grad_idx=(L-1)-i
+            dw = grad_W[grad_idx] if key.lower().startswith('w') else grad_b[grad_idx]
+
+            if key.lower().startswith('w'):
                 dw=dw+(self.wd*params[key])
 
             if self.method=='sgd':
