@@ -57,8 +57,8 @@ def main():
     weights=load_model(args.model_path)
     model.set_weights(weights)
 
-    Z_out, _ = model.forward(X_test)
-    y_pred=np.argmax(Z_out, axis=0)
+    Z_out= model.forward(X_test)
+    y_pred=np.argmax(Z_out, axis=1)
     accuracy=accuracy_score(y_test, y_pred)
     f1=f1_score(y_test, y_pred, average='macro')
     precision=precision_score(y_test, y_pred, average='macro', zero_division=0)

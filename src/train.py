@@ -15,8 +15,8 @@ def build_layer_dims(input_dim, hidden_dim, num_classes):
     return [input_dim] + hidden_dim + [num_classes]
 
 def evaluate(model, X, y_true):
-    Z_out = model.forward(X.T)
-    y_pred=np.argmax(Z_out, axis=1)
+    Z_out = model.forward(X)
+    y_pred=np.argmax(Z_out.T, axis=1)
     acc=accuracy_score(y_true, y_pred)
     f1=f1_score(y_true, y_pred, average='macro', zero_division=0)
     return acc, f1, y_pred
@@ -99,9 +99,9 @@ def main():
         for i in range(0, N, args.batch_size):
             X_batch=X_train[:, i:i+args.batch_size]
             y_batch=y_train_s[:, i:i+args.batch_size]
-            model.forward(X_batch.T)
-            loss=model.compute_loss(y_batch, args.loss)
-            grads=model.backward(y_batch, args.loss)
+            Z_out=model.forward(X_batch)
+            loss=model.compute_loss(Z_out, y_batch, args.loss)
+            grads=model.backward(Z_out, y_batch, args.loss)
             optim.update_parameters(model.init_params, grads)
             epoch_loss+=loss
             num_batches+=1

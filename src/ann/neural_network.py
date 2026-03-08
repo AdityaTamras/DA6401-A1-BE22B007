@@ -63,46 +63,40 @@ class NeuralNetwork:
                 layer.b=weight_dict[b_key].copy()
 
     def forward(self, X):
-        X=np.array(X)
-        n_in=self.n_in
-        if X.ndim == 1:
-            X = X.reshape(n_in, 1)          # flat -> (n_in, 1) column-major
-        elif X.ndim == 2:
-            # Use n_in (fixed at init) to unambiguously determine orientation
-            if X.shape[0] == n_in:
-                pass                        # already (n_in, batch)
-            elif X.shape[1] == n_in:
-                X = X.T                     # (batch, n_in) -> (n_in, batch)
-            else:
-                # Neither dim matches — fall back to treating as (batch, n_in)
-                X = X.T
-        self.cache={'A_0': X}
+        input_dim=self.layers[0].W.shape[0]
+        if X.ndim==1:
+            X=X.reshape(-1, 1)
+        row_major = (X.shape[1] == input_dim)
+        col_major = (X.shape[0] == input_dim)
+        if row_major and not col_major:
+            X_col=X.T
+        else:
+            X_col=X
+        cache={'A_0': X_col}
         L=self.num_layers
-        A_prev=X
+        A_prev=X_col
 
         for idx, layer in enumerate(self.layers, start=1):
             A=layer.forward(A_prev)
-            self.cache[f'A_{idx}']=A
+            cache[f'A_{idx}']=A
             A_prev=A
 
-        self.hidden_activations=[self.cache[f'A_{l}'] for l in range(1, L)]
-        self._last_logits=self.cache[f'A_{L}']
-        return self._last_logits.T
+        self.hidden_activations=[cache[f'A_{l}'] for l in range(1, L)]
+        self.cache=cache
+        if row_major and not col_major:
+            return cache[f'A_{L}'].T
+        return cache[f'A_{L}']
     
-    def compute_loss(self, Y, type):
-        return compute_loss(self._last_logits, Y, type)
+    def compute_loss(self,Z_out, Y, type='cross_entropy'):
+        return compute_loss(Z_out, Y, type)
 
-    def backward(self, y, loss_type='cross_entropy'):
+    def backward(self,Z_L, y, loss_type='cross_entropy'):
+        cache=self.cache
         grads={}
-        y=np.array(y)
-        if y.ndim==1:
-            y=y.reshape(-1, 1)
-        elif y.shape[1]==self._last_logits.shape[0]:
-            y = y.T
-        m=y.shape[1]
+        m=y.shape[1] if y.ndim>1 else y.shape[0]
         L=self.num_layers
 
-        dZ_L=output_layer_grad(self._last_logits, y, loss_type)
+        dZ_L=output_layer_grad(Z_L, y, loss_type)
         output_layer=self.layers[L-1]
         dA_prev=output_layer.backward(dZ_L, m)
         grads[f'dW{L-1}']=output_layer.grad_W
