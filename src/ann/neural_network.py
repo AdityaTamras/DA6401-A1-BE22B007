@@ -42,8 +42,8 @@ class NeuralNetwork:
     def init_params(self):
         params={}
         for idx, layer in enumerate(self.layers, start=0):
-            params[f'W{idx}']=layer.W
-            params[f'b{idx}']=layer.b
+            params[f'W{idx}']=layer.W.copy()
+            params[f'b{idx}']=layer.b.copy()
         return params
 
     def get_weights(self):

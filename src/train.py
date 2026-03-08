@@ -102,7 +102,9 @@ def main():
             Z_out=model.forward(X_batch)
             loss=model.compute_loss(Z_out, y_batch, args.loss)
             grad_W, grad_b = model.backward(Z_out, y_batch, args.loss)
-            optim.update_parameters(model.init_params, grad_W, grad_b)
+            params=model.init_params
+            optim.update_parameters(params, grad_W, grad_b)
+            model.set_weights(params)
             epoch_loss+=loss
             num_batches+=1
             global_step+=1
