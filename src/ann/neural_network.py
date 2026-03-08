@@ -104,13 +104,12 @@ class NeuralNetwork:
         if y.shape[0] != n_out and y.shape[1] == n_out:
             y = y.T
 
-        if y.shape[0]==1 or y.shape[1]==1:
-            num_classes = n_out
+        if y.shape[0] != n_out:
             m_samples = y.size
-            y_onehot = np.zeros((num_classes, m_samples))
+            y_onehot = np.zeros((n_out, m_samples))
             y_onehot[y.flatten().astype(int), np.arange(m_samples)] = 1
             y = y_onehot
-            
+
         m=y.shape[1] if y.ndim>1 else y.shape[0]
         L=self.num_layers
 
