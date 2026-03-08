@@ -93,6 +93,17 @@ class NeuralNetwork:
     def backward(self,Z_L, y, loss_type='cross_entropy'):
         cache=self.cache
         grads={}
+        n_out=self.layers[-1].W.shape[1]
+        if Z_L.ndim == 1:
+            Z_L = Z_L.reshape(-1, 1)
+        if Z_L.shape[0] != n_out and Z_L.shape[1] == n_out:
+            Z_L = Z_L.T
+
+        if y.ndim == 1:
+            y = y.reshape(-1, 1)
+        if y.shape[0] != n_out and y.shape[1] == n_out:
+            y = y.T
+            
         m=y.shape[1] if y.ndim>1 else y.shape[0]
         L=self.num_layers
 
