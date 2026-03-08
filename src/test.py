@@ -19,7 +19,8 @@ best_config= argparse.Namespace(
 model = NeuralNetwork(best_config)
 
 weights = np.load("best_model.npy", allow_pickle=True).item()
-
+for key, val in weights.items():
+    print(f"{key}: {val.shape}")
 model.set_weights(weights)
 
 X_test = np.random.rand(100, 784) # 100 samples, 784 features (e.g., flattened 28x28 images)
