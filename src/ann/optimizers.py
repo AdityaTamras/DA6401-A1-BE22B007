@@ -10,14 +10,13 @@ class Optimizer:
 
     def update_parameters(self, params, grad_W, grad_b):
         L=len(grad_W)
-        for key in params.keys():
-            if key not in self.v:
+        for idx, key in enumerate(sorted(params.keys())):
+            if key not in self.v or self.v[key].shape != params[key].shape:
                 self.v[key]=np.zeros_like(params[key])
                 self.m[key]=np.zeros_like(params[key])
-
-            i=int(''.join(filter(str.isdigit, key)))
-            grad_idx=(L-1)-i
-            dw = grad_W[grad_idx] if key.lower().startswith('w') else grad_b[grad_idx]
+                
+            i = int(''.join(filter(str.isdigit, key)))
+            dw = grad_W[i] if key.lower().startswith('w') else grad_b[i]
 
             if key.lower().startswith('w'):
                 dw=dw+(self.wd*params[key])
