@@ -24,5 +24,5 @@ def output_layer_grad(Z_L, Y, loss_type):
         dA_L=(2/m)*(A_L-Y)
         dZ_L=dA_L*A_L*(1-A_L)
     else:
-        dZ_L=A_L-Y
+        dZ_L=(1/m)*(A_L-Y)
     return dZ_L
